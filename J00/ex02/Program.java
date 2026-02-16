@@ -36,24 +36,23 @@ public class Program {
         Scanner scanner = new Scanner(System.in);
         int queries = 1;
         int count = 0;
-        while (true) {
-
+        try{
             while (!scanner.hasNextInt()) {
-                System.err.print("Invalid Input Type\n");
-                scanner.next();
-            }
+                int number = scanner.nextInt();
 
-            int number = scanner.nextInt();
-
-            int sum = sumOfElements(number);
-            if (isPrime(sum) == true) {
-                count++;
+                int sum = sumOfElements(number);
+                if (isPrime(sum) == true) {
+                    count++;
+                }
+                if (queries % 4 == 0) {
+                    System.out.print("Count of coffee-request : " + count + "\n");
+                }
+                queries++;
             }
-            if (queries % 4 == 0) {
-                System.out.print("Count of coffee-request : " + count + "\n");
-            }
-            queries++;
+            scanner.close();
         }
-        // scanner.close();
+        catch(Exception e) {
+            System.exit(1);
+        }
     }    
 }
