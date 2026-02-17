@@ -1,5 +1,3 @@
-
-
 /*
 
  * Program
@@ -22,6 +20,10 @@ class Program {
         user2.Name = "Hugo";
         user2.Balance = 500L;
 
-        System.out.println(user2.id);
+        UsersArrayList users = new UsersArrayList();
+        users.addUser(user1);
+        System.out.println(users.usersData[0].Name);
+
+        System.out.println(users.index);
     }
 }
