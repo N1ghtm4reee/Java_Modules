@@ -16,12 +16,12 @@ enum transferCategory {
 
 public class Transaction {
     int Identifier;
-    String Recipient;
-    String Sender;
+    User Recipient;
+    User Sender;
     transferCategory category;
     Long transferAmount;
 
-    Long getSenderBalance();
-    Long setRecipientBalance();
+    // Long getSenderBalance();
+    // Long setRecipientBalance();
 
 }

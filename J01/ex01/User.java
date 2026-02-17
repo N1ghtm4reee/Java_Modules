@@ -10,7 +10,11 @@
  */
 
 public class User {
-    int Identifier;
+    public final int id;
     String Name;
     Long Balance;
+
+    public User() {
+        this.id = UserIdsGenerator.getInstance().generateId();
+    }
 }
