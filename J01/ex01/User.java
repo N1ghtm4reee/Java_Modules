@@ -11,8 +11,8 @@
 
 public class User {
     public final int id;
-    String Name;
-    Long Balance;
+    public String Name;
+    public Long Balance;
 
     public User() {
         this.id = UserIdsGenerator.getInstance().generateId();

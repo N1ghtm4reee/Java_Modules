@@ -11,19 +11,15 @@
 
 public class UserIdsGenerator {
     private static UserIdsGenerator Instance;
-    int lastId;
+    private int lastId;
     
 
     private UserIdsGenerator() {
         this.lastId = 0;
     }
-    
-    public void CreateInstance() {
-        this.Instance = new UserIdsGenerator();
-    }
 
     public int generateId() {
-        return (lastId = lastId + 1);
+        return ++lastId;
     }
 
     public static UserIdsGenerator getInstance() {
