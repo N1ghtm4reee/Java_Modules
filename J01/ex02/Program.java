@@ -20,7 +20,7 @@ class Program {
         user2.Name = "Hugo";
         user2.Balance = 500L;
 
-        UsersArrayList users = new UsersArrayList();
+        UsersArrayList users = UsersArrayList.getInstance();
         users.addUser(user1);
         System.out.println(users.usersData[0].Name);
 

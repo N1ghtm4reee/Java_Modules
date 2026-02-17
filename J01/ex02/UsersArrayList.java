@@ -12,12 +12,19 @@ import java.util.Arrays;
  * Copyright notice
  */
 
+class UserNotFoundException extends RuntimeException {
+    public UserNotFoundException(String m) {
+        super(m);  
+    }
+}
+
 class UsersArrayList implements UsersList {
+    private static UsersArrayList UsersArrayListInstnce;
     User[] usersData;
     int index;
     int arrayMaxSize;
 
-    public UsersArrayList() {
+    private UsersArrayList() {
         arrayMaxSize = 10;
         index = 0;
         usersData = new User[arrayMaxSize];
@@ -35,14 +42,38 @@ class UsersArrayList implements UsersList {
     }
     @Override
     public User getUserById(int id) {
-        return null;
+        User user = null;
+        for (int i = 0; i < usersData.length; i++) {
+            if (usersData[i].id == id) {
+                user = usersData[i];
+            }
+        }
+        if (user == null){
+            throw new UserNotFoundException("User not found!");
+        }
+        return user;
     }
     @Override
     public User getUserByIndex(int index) {
-        return null;
+        User user = null;
+        for (int i = 0; i < usersData.length; i++) {
+            if (i == index) {
+                user = usersData[i];
+            }
+        }
+        if (user == null){
+            throw new UserNotFoundException("User not found!");
+        }
+        return user;
     }
     @Override
     public int getUsersCount() {
-        return 0;
+        return index;
+    }
+    public static UsersArrayList getInstance() {
+        if (UsersArrayList.UsersArrayListInstnce == null) {
+            UsersArrayList.UsersArrayListInstnce = new UsersArrayList();
+        }
+        return UsersArrayList.UsersArrayListInstnce;
     }
 }
