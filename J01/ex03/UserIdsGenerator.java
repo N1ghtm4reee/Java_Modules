@@ -1,4 +1,5 @@
 
+
 public class UserIdsGenerator {
     private static UserIdsGenerator Instance;
     private int lastId;

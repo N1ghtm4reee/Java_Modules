@@ -1,13 +1,3 @@
-/*
-
- * UserIdsGenerator
- * 
- * Version information
- *
- * Date
- * 
- * Copyright notice
- */
 
 public class UserIdsGenerator {
     private static UserIdsGenerator Instance;

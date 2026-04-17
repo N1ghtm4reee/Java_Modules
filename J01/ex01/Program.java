@@ -13,15 +13,9 @@
 
 class Program {
     public static void main(String[] args) {
-        User user1 = new User();
-        User user2 = new User();
+        User user1 = new User("Ayoub", 1500L);
+        User user2 = new User("Hugo", 500L);
 
-        user1.Name = "Ayoub";
-        user1.Balance = 1500L;
-
-        user2.Name = "Hugo";
-        user2.Balance = 500L;
-
-        System.out.println(user2.id);
+        System.out.println(user2.getId());
     }
 }
