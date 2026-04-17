@@ -6,6 +6,5 @@ public interface TransactionsList {
     void add( Transaction transaction );
     int remove( Transaction transaction );
     Transaction[] toArray();
-    Transaction get( int i );
-    int size();
+    Transaction get( String id );
 }

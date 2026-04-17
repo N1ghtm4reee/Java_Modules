@@ -1,11 +1,26 @@
-
+package ex03;
 
 public class User {
-    public int id;
-    public String Name;
-    public Long Balance;
+    int id;
+    String name;
+    Long balance;
 
-    public User() {
+    User(String name, Long balance) {
         this.id = UserIdsGenerator.getInstance().generateId();
+        this.name = name;
+        this.balance = balance;
+    }
+    
+    public Long getBalance() {
+        return this.balance;
+    }
+    public int getId() {
+        return id;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setNewBalance(Long newBalance) {
+        this.balance = newBalance;
     }
 }
