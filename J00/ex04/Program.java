@@ -1,151 +1,139 @@
-package ex04;
-
-import java.util.*;
+import java.util.Scanner;
 
 public class Program {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int[] counts = new int[26];
-        int[] top = new int[10];
-        Arrays.fill(top, -1);
+    private static void insertTopValue(int[] topChars, int[] topCounts, int ch, int count) {
+        int index = 0;
 
-        try {
-            if (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-
-                for (char c : line.toCharArray()) {
-                    if (!Character.isAlphabetic(c)) {
-                        throw new Exception("Invalid input");
-                    }
-                    c = Character.toLowerCase(c);
-                    int idx = c - 'a';
-                    counts[idx]++;
-                    updateTop(top, counts, idx);
-                }
+        while (index < 10) {
+            if (count > topCounts[index]
+                    || (count == topCounts[index] && count > 0 && ch < topChars[index])) {
+                break;
             }
-
-            List<Integer> used = new ArrayList<>();
-            for (int i : top) {
-                if (i != -1 && counts[i] > 0 && !used.contains(i)) {
-                    used.add(i);
-                }
-            }
-            if (used.isEmpty()) {
-                return;
-            }
-
-            used.sort((a, b) -> {
-                if (counts[b] != counts[a]) return counts[b] - counts[a];
-                return a - b;
-            });
-
-            int maxCount = 0;
-            for (int i : used) {
-                maxCount = Math.max(maxCount, counts[i]);
-            }
-
-            int[] scaled = new int[used.size()];
-            for (int i = 0; i < used.size(); i++) {
-                int cnt = counts[used.get(i)];
-
-                scaled[i] = (cnt * 10 + maxCount - 1) / maxCount; // ceil(cnt * 10 / maxCount)
-                if (scaled[i] == 0) scaled[i] = 1; // just in case
-            }
-
-            int maxHeight = 10;
-
-            for (int level = maxHeight; level >= 1; level--) {
-                StringBuilder row = new StringBuilder();
-                for (int i = 0; i < used.size(); i++) {
-                    int cnt = counts[used.get(i)];
-                    int h   = scaled[i];
-
-                    if (h >= level) {
-                        if (level == h) {
-                            row.append(cnt);
-                        } else {
-                            row.append("#");
-                        }
-                    } else {
-                        row.append(" ");
-                    }
-
-                    if (i != used.size() - 1) {
-                        row.append(" ");
-                    }
-                }
-                System.out.println(row.toString().replaceFirst("\\s+$", ""));
-            }
-
-            StringBuilder lettersLine = new StringBuilder();
-            for (int i = 0; i < used.size(); i++) {
-                char ch = (char) ('A' + used.get(i));
-                lettersLine.append(ch);
-                if (i != used.size() - 1) {
-                    lettersLine.append(" ");
-                }
-            }
-            System.out.println(lettersLine);
-
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+            index++;
         }
+
+        if (index == 10) {
+            return;
+        }
+
+        int move = 9;
+        while (move > index) {
+            topChars[move] = topChars[move - 1];
+            topCounts[move] = topCounts[move - 1];
+            move--;
+        }
+
+        topChars[index] = ch;
+        topCounts[index] = count;
     }
 
-    private static void updateTop(int[] top, int[] counts, int idx) {
-        int pos = -1;
+    private static int collectTopCharacters(String text, int[] topChars, int[] topCounts) {
+        int[] occurrences = new int[65536];
+        char[] chars = text.toCharArray();
+        int index = 0;
+        int size = 0;
+        int code = 0;
 
-        // already in top?
-        for (int i = 0; i < top.length; i++) {
-            if (top[i] == idx) {
-                pos = i;
-                break;
-            }
+        while (index < chars.length) {
+            occurrences[chars[index]]++;
+            index++;
         }
 
-        // not present: try to add in empty slot
-        if (pos == -1) {
-            for (int i = 0; i < top.length; i++) {
-                if (top[i] == -1) {
-                    top[i] = idx;
-                    pos = i;
-                    break;
+        while (code < occurrences.length) {
+            if (occurrences[code] > 0) {
+                insertTopValue(topChars, topCounts, code, occurrences[code]);
+            }
+            code++;
+        }
+
+        while (size < 10 && topCounts[size] > 0) {
+            size++;
+        }
+        return size;
+    }
+
+    private static int scaledHeight(int count, int maxCount) {
+        return (count * 10 + maxCount - 1) / maxCount;
+    }
+
+    private static void printCell(String value) {
+        int padding = 3 - value.length();
+
+        while (padding > 0) {
+            System.out.print(" ");
+            padding--;
+        }
+        System.out.print(value);
+    }
+
+    private static void printHistogram(String text) {
+        int[] topChars = new int[10];
+        int[] topCounts = new int[10];
+        int[] heights = new int[10];
+        int size = collectTopCharacters(text, topChars, topCounts);
+        int maxCount = 0;
+        int index = 0;
+
+        if (size == 0) {
+            return;
+        }
+
+        while (index < size) {
+            if (topCounts[index] > maxCount) {
+                maxCount = topCounts[index];
+            }
+            index++;
+        }
+
+        index = 0;
+        while (index < size) {
+            heights[index] = scaledHeight(topCounts[index], maxCount);
+            index++;
+        }
+
+        int level = 10;
+        while (level > 0) {
+            index = 0;
+            while (index < size) {
+                if (heights[index] == level) {
+                    printCell(String.valueOf(topCounts[index]));
+                } else if (heights[index] > level) {
+                    printCell("#");
+                } else {
+                    printCell("");
                 }
+                index++;
             }
+            System.out.println();
+            level--;
         }
 
-        // still not present: maybe replace the smallest
-        if (pos == -1) {
-            int minPos = 0;
-            for (int i = 1; i < top.length; i++) {
-                if (counts[top[i]] < counts[top[minPos]]) {
-                    minPos = i;
-                }
-            }
-            if (counts[idx] > counts[top[minPos]]) {
-                top[minPos] = idx;
-                pos = minPos;
-            } else {
-                return; // does not enter top10
-            }
+        index = 0;
+        while (index < size) {
+            printCell(String.valueOf((char) topChars[index]));
+            index++;
+        }
+        System.out.println();
+    }
+
+    private static void runDemo() {
+        String sample =
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASSSSSSSSSSSSSSSSSSSSSSSDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+                        + "WEWWKFKKDKKDSKAKLSLDKSKALLLLLLLLLLRTRTETWTWWWWWWWWWWOOOOOOO42";
+        printHistogram(sample);
+        printHistogram("abcaabbccddeeff");
+    }
+
+    public static void main(String[] args) {
+        if (args.length == 1 && args[0].equals("--demo")) {
+            runDemo();
+            return;
         }
 
-        // bubble up by (count desc, letter asc)
-        while (pos > 0) {
-            int cur  = top[pos];
-            int prev = top[pos - 1];
-            if (prev == -1) {
-                top[pos - 1] = cur;
-                top[pos] = -1;
-                pos--;
-            } else if (counts[cur] > counts[prev] ||
-                    (counts[cur] == counts[prev] && cur < prev)) {
-                top[pos] = prev;
-                top[pos - 1] = cur;
-                pos--;
-            } else {
-                break;
-            }
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextLine()) {
+            printHistogram(scanner.nextLine());
         }
+        scanner.close();
     }
 }

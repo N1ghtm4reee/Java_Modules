@@ -1,18 +1,29 @@
-package ex00; // not important for now
-
 public class Program {
-
     private static final int NUMBER = 479598;
 
-    public static void main(String[] args) {
-        int number = NUMBER;
-        int result = 0;
+    private static int sumDigits(int number) {
+        int value = number;
+        int sum = 0;
 
-        while (number != 0) {
-            result += number % 10;
-            number /= 10;
+        while (value != 0) {
+            sum += value % 10;
+            value /= 10;
         }
+        return sum;
+    }
 
-        System.out.print(result + "\n");
+    private static void runDemo() {
+        System.out.println("479598 -> " + sumDigits(479598));
+        System.out.println("111111 -> " + sumDigits(111111));
+        System.out.println("900000 -> " + sumDigits(900000));
+        System.out.println("123456 -> " + sumDigits(123456));
+    }
+
+    public static void main(String[] args) {
+        if (args.length == 1 && args[0].equals("--demo")) {
+            runDemo();
+            return;
+        }
+        System.out.println(sumDigits(NUMBER));
     }
 }

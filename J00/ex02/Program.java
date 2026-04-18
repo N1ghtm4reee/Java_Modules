@@ -1,29 +1,24 @@
-/*
-
- * Program
- *
-*/
-
-package ex02;import java.util.Scanner;
+import java.util.Scanner;
 
 public class Program {
+    private static int sumDigits(int number) {
+        int value = number;
+        int sum = 0;
 
-    static int sumOfElements(int number) {
-        int result = 0;
-        
-        while (number != 0) {
-            result += number % 10;
-            number /= 10;
+        while (value != 0) {
+            sum += value % 10;
+            value /= 10;
         }
-
-        return result;
+        return sum;
     }
 
-    static boolean isPrime(int number) {
+    private static boolean isPrime(int number) {
         int div = 2;
-        if (number < 2) return false;
 
-        while (div <= (number / 2)) {
+        if (number <= 1) {
+            return false;
+        }
+        while (div <= number / div) {
             if (number % div == 0) {
                 return false;
             }
@@ -32,27 +27,56 @@ public class Program {
         return true;
     }
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int queries = 1;
+    private static void processSequence(Scanner scanner) {
         int count = 0;
-        try{
-            while (!scanner.hasNextInt()) {
-                int number = scanner.nextInt();
 
-                int sum = sumOfElements(number);
-                if (isPrime(sum) == true) {
-                    count++;
-                }
-                if (queries % 4 == 0) {
-                    System.out.print("Count of coffee-request : " + count + "\n");
-                }
-                queries++;
+        while (scanner.hasNextInt()) {
+            int number = scanner.nextInt();
+            if (number == 42) {
+                break;
             }
-            scanner.close();
+            if (isPrime(sumDigits(number))) {
+                count++;
+            }
         }
-        catch(Exception e) {
-            System.exit(1);
+        System.out.println("Count of coffee-request : " + count);
+    }
+
+    private static void runDemo() {
+        int count = 0;
+
+        if (isPrime(sumDigits(198131))) {
+            count++;
         }
-    }    
+        if (isPrime(sumDigits(12901212))) {
+            count++;
+        }
+        if (isPrime(sumDigits(11122))) {
+            count++;
+        }
+        System.out.println("Count of coffee-request : " + count);
+
+        count = 0;
+        if (isPrime(sumDigits(2))) {
+            count++;
+        }
+        if (isPrime(sumDigits(3))) {
+            count++;
+        }
+        if (isPrime(sumDigits(5))) {
+            count++;
+        }
+        System.out.println("Count of coffee-request : " + count);
+    }
+
+    public static void main(String[] args) {
+        if (args.length == 1 && args[0].equals("--demo")) {
+            runDemo();
+            return;
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        processSequence(scanner);
+        scanner.close();
+    }
 }

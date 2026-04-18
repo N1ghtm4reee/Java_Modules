@@ -1,85 +1,104 @@
-/*
-
- * Program
- * 
- * Version information
- *
- * Date
- * 
- * Copyright notice
- */
-
-import java.util.Map;
 import java.util.Scanner;
-import java.util.TreeMap;
 
 public class Program {
-
-    // vars needed
-    static Map<Integer, int[]> studentData = new TreeMap<>();
-    static int weekNumber = 0;
-
-    static void visualizeData() {
-        studentData.forEach((key, val) -> {
-            System.out.print("Week " + key + " ");
-            calculateAverage(val);
-        });
+    private static void fail(boolean exitOnError) {
+        System.err.println("IllegalArgument");
+        if (exitOnError) {
+            System.exit(-1);
+        }
     }
 
-    static void calculateAverage(int[] notes) {
-        // calculates average & visualize progress
-        int avg = 0;
-        for (int i = 0; i < notes.length; i++) {
-            avg += notes[i];
+    private static boolean processStatistics(Scanner scanner, boolean exitOnError) {
+        long statistics = 0;
+        int weekCount = 0;
+
+        while (scanner.hasNext()) {
+            String token = scanner.next();
+
+            if (token.equals("42")) {
+                printStatistics(statistics, weekCount);
+                return true;
+            }
+            if (!token.equals("Week") || !scanner.hasNextInt()) {
+                fail(exitOnError);
+                return false;
+            }
+
+            int week = scanner.nextInt();
+            int test = 0;
+            int minGrade = 10;
+
+            if (week != weekCount + 1 || week > 18) {
+                fail(exitOnError);
+                return false;
+            }
+
+            while (test < 5) {
+                if (!scanner.hasNextInt()) {
+                    fail(exitOnError);
+                    return false;
+                }
+
+                int grade = scanner.nextInt();
+                if (grade < 1 || grade > 9) {
+                    fail(exitOnError);
+                    return false;
+                }
+                if (grade < minGrade) {
+                    minGrade = grade;
+                }
+                test++;
+            }
+
+            statistics = statistics * 10 + minGrade;
+            weekCount++;
         }
-        avg /= notes.length;
-        while(--avg != 0) {
-            System.out.print('=');
-        }
-        System.out.println(">");
+
+        fail(exitOnError);
+        return false;
     }
 
-    static void parser(String input) {
-        if (input.startsWith("Week")) /* */
-        {
-            int thisWeekNumber = Integer.parseInt(input.split(" ")[1]);
-            if ((thisWeekNumber > 0 && thisWeekNumber <= 18) && (thisWeekNumber - weekNumber == 1)) /* weeks from 1 to 18 and ensure order*/
-            {
-                weekNumber = thisWeekNumber;
-            }
-            else /* Invalid input */
-            {
-                throw new IllegalArgumentException();
-            }
+    private static void printStatistics(long statistics, int weekCount) {
+        long divisor = 1;
+        int week = 1;
+
+        while (week < weekCount) {
+            divisor *= 10;
+            week++;
         }
-        else if (!input.startsWith("Week")) {
-            int[] intNotes = new int[5];
-            String[] strNotes = input.split(" ");
-            if (strNotes.length != 5) throw new IllegalArgumentException();
-            for (int i = 0; i < 5; i++) {
-                int note = Integer.parseInt(strNotes[i]);
-                if (!(note > 0 && note < 10)) throw new IllegalArgumentException();
-                intNotes[i] = note;
+
+        week = 1;
+        while (week <= weekCount) {
+            int minGrade = (int) ((statistics / divisor) % 10);
+            int bar = 0;
+
+            System.out.print("Week " + week + " ");
+            while (bar < minGrade) {
+                System.out.print("=");
+                bar++;
             }
-            studentData.put(weekNumber, intNotes);
+            System.out.println(">");
+
+            if (divisor > 1) {
+                divisor /= 10;
+            }
+            week++;
         }
+    }
+
+    private static void runDemo() {
+        printStatistics(2634, 4);
+        fail(false);
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        try {
-            while(scanner.hasNextLine())
-            {
-                String line = scanner.nextLine();
-                if (line.equals("42")) { /* reached limit */
-                    break;
-                }
-                parser(line);
-            }
-            visualizeData();
-            scanner.close();
-        } catch (Exception e) {
-            System.err.println("Invalid input");
+        if (args.length == 1 && args[0].equals("--demo")) {
+            runDemo();
+            return;
         }
+
+        Scanner scanner = new Scanner(System.in);
+        processStatistics(scanner, true);
+        scanner.close();
     }
 }

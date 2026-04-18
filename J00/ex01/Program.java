@@ -1,33 +1,45 @@
-package ex01;
-
 import java.util.Scanner;
 
 public class Program {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int number = scanner.nextInt();
-        int iterations = 1;
+    private static void printPrimeStatus(int number, boolean exitOnError) {
         int div = 2;
-        boolean result = true;
+        int iterations = 1;
 
         if (number <= 1) {
-            System.err.print("IllegalArgument\n");
-            System.exit(-1);
+            System.err.println("IllegalArgument");
+            if (exitOnError) {
+                System.exit(-1);
+            }
+            return;
         }
-
-        while (true) {
+        while (div <= number / div) {
             if (number % div == 0) {
-                result = false;
-                break;
+                System.out.println("false " + iterations);
+                return;
             }
-            if (div >= (number / 2)) {
-                break;
-            }
+            div++;
             iterations++;
-            div += 1;
+        }
+        System.out.println("true " + iterations);
+    }
+
+    private static void runDemo() {
+        printPrimeStatus(169, false);
+        printPrimeStatus(113, false);
+        printPrimeStatus(42, false);
+        printPrimeStatus(-100, false);
+    }
+
+    public static void main(String[] args) {
+        if (args.length == 1 && args[0].equals("--demo")) {
+            runDemo();
+            return;
         }
 
-        System.out.print(result + " " + iterations + "\n");
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextInt()) {
+            printPrimeStatus(scanner.nextInt(), true);
+        }
         scanner.close();
     }
 }
