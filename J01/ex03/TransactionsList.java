@@ -4,7 +4,10 @@ public interface TransactionsList {
     
 
     void add( Transaction transaction );
-    int remove( Transaction transaction );
+
+    void remove( Transaction transaction );
+    
     Transaction[] toArray();
+    
     Transaction get( String id );
 }

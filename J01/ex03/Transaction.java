@@ -77,4 +77,8 @@ public class Transaction {
         recipient.setNewBalance(newBalance);
     }
 
+
+    String getId() {
+        return this.Id;
+    }
 }
